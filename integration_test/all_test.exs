@@ -12,7 +12,7 @@ Code.require_file "#{ecto}/integration_test/cases/repo.exs", __DIR__
 ecto_sql = Mix.Project.deps_paths()[:ecto_sql]
 
 #
-# The are not supported by SQLite3 unfortunately
+# The are not supported by libSQL unfortunately
 #
 # Code.require_file "#{ecto_sql}/integration_test/sql/alter.exs", __DIR__
 # Code.require_file "#{ecto_sql}/integration_test/sql/lock.exs", __DIR__

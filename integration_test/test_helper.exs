@@ -11,8 +11,9 @@ Code.require_file("#{ecto_sql}/integration_test/support/repo.exs", __DIR__)
 alias Ecto.Integration.TestRepo
 
 Application.put_env(:ecto_libsql, TestRepo,
-  adapter: Ecto.Adapters.SQLite3,
-  database: "/tmp/exqlite_integration_test.db",
+  adapter: Ecto.Adapters.LibSQL,
+  mode: :local,
+  path: "/tmp/ex_libsql_integration_test.db",
   pool: Ecto.Adapters.SQL.Sandbox,
   show_sensitive_data_on_connection_error: true
 )
@@ -21,8 +22,9 @@ Application.put_env(:ecto_libsql, TestRepo,
 alias Ecto.Integration.PoolRepo
 
 Application.put_env(:ecto_libsql, PoolRepo,
-  adapter: Ecto.Adapters.SQLite3,
-  database: "/tmp/exqlite_integration_pool_test.db",
+  adapter: Ecto.Adapters.LibSQL,
+  mode: :local,
+  path: "/tmp/ex_libsql_integration_pool_test.db",
   show_sensitive_data_on_connection_error: true
 )
 
@@ -31,7 +33,7 @@ Application.put_env(:ecto_sql, TestRepo, Application.get_env(:ecto_libsql, TestR
 Application.put_env(:ecto_sql, PoolRepo, Application.get_env(:ecto_libsql, PoolRepo))
 
 defmodule Ecto.Integration.PoolRepo do
-  use Ecto.Integration.Repo, otp_app: :ecto_libsql, adapter: Ecto.Adapters.SQLite3
+  use Ecto.Integration.Repo, otp_app: :ecto_libsql, adapter: Ecto.Adapters.LibSQL
 end
 
 Code.require_file "#{ecto}/integration_test/support/schemas.exs", __DIR__
@@ -45,14 +47,14 @@ defmodule Ecto.Integration.Case do
   end
 end
 
-{:ok, _} = Ecto.Adapters.SQLite3.ensure_all_started(TestRepo.config(), :temporary)
+{:ok, _} = Ecto.Adapters.LibSQL.ensure_all_started(TestRepo.config(), :temporary)
 
 # Load up the repository, start it, and run migrations
-_ = Ecto.Adapters.SQLite3.storage_down(TestRepo.config())
-:ok = Ecto.Adapters.SQLite3.storage_up(TestRepo.config())
+_ = Ecto.Adapters.LibSQL.storage_down(TestRepo.config())
+:ok = Ecto.Adapters.LibSQL.storage_up(TestRepo.config())
 
-_ = Ecto.Adapters.SQLite3.storage_down(PoolRepo.config())
-:ok = Ecto.Adapters.SQLite3.storage_up(PoolRepo.config())
+_ = Ecto.Adapters.LibSQL.storage_down(PoolRepo.config())
+:ok = Ecto.Adapters.LibSQL.storage_up(PoolRepo.config())
 
 {:ok, _} = TestRepo.start_link()
 {:ok, _pid} = PoolRepo.start_link()
@@ -61,33 +63,33 @@ excludes = [
   :delete_with_join,
   :right_join,
 
-  # SQLite does not have an array type
+  # libSQL does not have an array type
   :array_type,
   :transaction_isolation,
   :insert_cell_wise_defaults,
   :insert_select,
 
-  # sqlite does not support microsecond precision, only millisecond
+  # libSQL does not support microsecond precision, only millisecond
   :microsecond_precision,
 
-  # sqlite supports FKs, but does not return sufficient data
+  # libSQL supports FKs, but does not return sufficient data
   # for ecto to support matching on a given constraint violation name
   # which is what most of the tests validate
   :foreign_key_constraint,
 
-  # SQLite with DSQLITE_LIKE_DOESNT_MATCH_BLOBS=1
+  # libSQL with DSQLITE_LIKE_DOESNT_MATCH_BLOBS=1
   # does not support using LIKE on BLOB types
   :like_match_blob,
 
-  # SQLite will return a string for schemaless map types as
+  # libSQL will return a string for schemaless map types as
   # Ecto does not have enough information to call the associated loader
   # that converts the string JSON representation into a map
   :map_type_schemaless,
 
   # right now in lock_for_migrations() we do effectively nothing, this is because
-  # SQLite is single-writer so there isn't really a need for us to do anything.
+  # libSQL is single-writer so there isn't really a need for us to do anything.
   # ecto assumes all implementing adapters need >=2 connections for migrations
-  # which is not true for SQLite
+  # which is not true for libSQL
   :lock_for_migrations,
 
   # Migration we don't support
@@ -100,22 +102,22 @@ excludes = [
   :modify_column,
   :restrict,
 
-  # SQLite3 does not support the concat function
+  # libSQL does not support the concat function
   :concat,
 
-  # SQLite3 does not support placeholders
+  # libSQL does not support placeholders
   :placeholders,
 
-  # SQLite3 stores booleans as integers, causing Ecto's json_extract_path tests to fail
+  # libSQL stores booleans as integers, causing Ecto's json_extract_path tests to fail
   :json_extract_path,
 
-  # SQLite3 doesn't support specifying columns for ON DELETE SET NULL
+  # libSQL doesn't support specifying columns for ON DELETE SET NULL
   :on_delete_nilify_column_list,
 
   # not sure how to support this yet
   :bitstring_type,
 
-  # sqlite does not have a duration type... yet
+  # libSQL does not have a duration type... yet
   :duration_type,
 
   # We don't support selected_as
@@ -127,7 +129,7 @@ excludes = [
   # Distinct with options not supported
   :distinct_count,
 
-  # SQLite does not support anything except a single column in DISTINCT
+  # libSQL does not support anything except a single column in DISTINCT
   :multicolumn_distinct,
 
   # Values list
