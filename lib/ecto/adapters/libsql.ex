@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3 do
+defmodule Ecto.Adapters.LibSQL do
   @moduledoc """
-  Adapter module for SQLite3.
+  Adapter module for libSQL.
 
-  It uses `Exqlite` for communicating to the database.
+  It uses `ExLibSQL` for communicating to the database.
 
   ## Options
 
@@ -16,7 +16,7 @@ defmodule Ecto.Adapters.SQLite3 do
     * `:default_transaction_mode` - one of `:deferred` (default), `:immediate`, or
       `:exclusive`. If a mode is not specified in a call to `Repo.transaction/2`, this
       will be the default transaction mode.
-    * `:journal_mode` - Sets the journal mode for the sqlite connection. Can be one of
+    * `:journal_mode` - Sets the journal mode for the libSQL connection. Can be one of
       the following `:delete`, `:truncate`, `:persist`, `:memory`, `:wal`, or `:off`.
       Defaults to `:wal`.
     * `:temp_store` - Sets the storage used for temporary tables. Default is `:default`.
@@ -36,9 +36,9 @@ defmodule Ecto.Adapters.SQLite3 do
     * `:auto_vacuum` - Defaults to `:none`. Can be `:none`, `:full` or `:incremental`.
       Depending on the database size, `:incremental` may be beneficial.
     * `:locking_mode` - Defaults to `:normal`. Allowed values are `:normal` or
-      `:exclusive`. See [sqlite documentation][1] for more information.
+      `:exclusive`. See [libSQL documentation][1] for more information.
     * `:secure_delete` - Defaults to `:off`. Can be `:off` or `:on`. If `:on`, it will
-      cause SQLite3 to overwrite records that were deleted with zeros.
+      cause libSQL to overwrite records that were deleted with zeros.
     * `:wal_auto_check_point` - Sets the write-ahead log auto-checkpoint interval.
       Default is `1000`. Setting the auto-checkpoint size to zero or a negative value
       turns auto-checkpointing off.
@@ -61,33 +61,7 @@ defmodule Ecto.Adapters.SQLite3 do
        library compiled for the current architecture. See `Exqlite.Connection.connect/1`
        for more.
 
-  For more information about the options above, see [sqlite documentation][1]
-
-  ### Differences between SQLite and Ecto SQLite defaults
-
-  For the most part, the defaults we provide above match the defaults that SQLite usually
-  ships with. However, SQLite has conservative defaults due to its need to be strictly
-  backwards compatible, so some of them do not necessarily match "best practices". Below
-  are the defaults we provide above that differ from the normal SQLite defaults, along
-  with rationale.
-
-    * `:journal_mode` - we use `:wal`, as it is vastly superior
-      for concurrent access. SQLite usually defaults to `:delete`.
-      See [SQLite documentation][2] for more info.
-    * `:temp_store` - we use `:memory`, which increases performance a bit.
-      SQLite usually defaults to `:file`.
-    * `:foreign_keys` - we set it to `:on`, for better relational guarantees.
-      This is also the default of the underlying `Exqlite` driver.
-      SQLite usually defaults to `:off` for backwards compat.
-    * `:busy_timeout` - we set it to `2000`, to better enable concurrent access.
-      This is also the default of `Exqlite`. SQLite usually defaults to `0`.
-    * `:cache_size` - we set it to `-64000`, to speed up access of data.
-      SQLite usually defaults to `-2000`.
-
-  These defaults can of course be overridden, as noted above, to suit other needs.
-
-  [1]: https://www.sqlite.org/pragma.html
-  [2]: https://sqlite.org/wal.html
+  For more information about the options above, see [libSQL documentation][1]
 
   ### Binary ID types
 
@@ -102,20 +76,20 @@ defmodule Ecto.Adapters.SQLite3 do
   The main differences between the two formats are as follows:
   * When stored as binary, UUIDs require much less space in the database. IDs stored as
     strings require 36 bytes each, while IDs stored as binary only require 16 bytes.
-  * Because SQLite does not have a dedicated UUID type, most clients cannot represent
+  * Because libSQL does not have a dedicated UUID type, most clients cannot represent
     UUIDs stored as binary in a human readable format. Therefore, IDs stored as strings
     may be easier to work with if manual manipulation is required.
 
   ## Limitations and caveats
 
-  There are some limitations when using Ecto with SQLite that one needs
+  There are some limitations when using Ecto with libSQL that one needs
   to be aware of. The ones listed below are specific to Ecto usage, but it
-  is encouraged to also view the guidance on [when to use SQLite][4] provided
-  by the SQLite documentation, as well.
+  is encouraged to also view the guidance on [when to use libSQL][4] provided
+  by the libSQL documentation, as well.
 
   ### In memory robustness
 
-  When using the Ecto SQLite3 adapter with the database set to `:memory` it
+  When using the Ecto libSQL adapter with the database set to `:memory` it
   is possible that a crash in a process performing a query in the Repo will
   cause the database to be destroyed. This makes the `:memory` function
   unsuitable when it is expected to survive potential process crashes (for
@@ -123,15 +97,11 @@ defmodule Ecto.Adapters.SQLite3 do
 
   ### Async Sandbox testing
 
-  The Ecto SQLite3 adapter does not support async tests when used with
-  `Ecto.Adapters.SQL.Sandbox`. This is due to SQLite only allowing up one write
+  The Ecto libSQL adapter does not support async tests when used with
+  `Ecto.Adapters.SQL.Sandbox`. This is due to libSQL only allowing up one write
   transaction at a time, which often does not work with the Sandbox approach of wrapping
   each test in a transaction.
 
-  ### LIKE match on BLOB columns
-
-  We have the `SQLITE_LIKE_DOESNT_MATCH_BLOBS` compile-time definition option set to true,
-  as [recommended by SQLite][3]. This means you cannot do `LIKE` queries on `BLOB` columns.
 
   ### Case sensitivity
 
@@ -140,7 +110,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   However, for equality comparison, case sensitivity is always _on_.
   If you want to make a column not be case sensitive, for email storage for example, you
-  can make it case insensitive by using the [`COLLATE NOCASE`][6] option in SQLite. This
+  can make it case insensitive by using the [`COLLATE NOCASE`][6] option in libSQL. This
   is configured via the `:collate` option.
 
   So instead of:
@@ -153,17 +123,17 @@ defmodule Ecto.Adapters.SQLite3 do
 
   ### Check constraints
 
-  SQLite3 supports specifying check constraints on the table or on the column definition.
+  libSQL supports specifying check constraints on the table or on the column definition.
   We currently only support adding a check constraint via a column definition, since the
   table definition approach only works at table-creation time and cannot be added at
-  table-alter time. You can see more information in the SQLite3
+  table-alter time. You can see more information in the libSQL
   [CREATE TABLE documentation](https://sqlite.org/lang_createtable.html).
 
   Because of this, you cannot add a constraint via the normal `Ecto.Migration.constraint/3`
   method, as that operates via `ALTER TABLE ADD CONSTRAINT`, and this type of `ALTER TABLE`
-  operation SQLite3 does not support. You can however get the full functionality by
+  operation libSQL does not support. You can however get the full functionality by
   adding a constraint at the column level, specifying the name and expression. Per the
-  SQLite3 documentation, there is no _functional_ difference between a column or table
+  libSQL documentation, there is no _functional_ difference between a column or table
   constraint.
 
   Thus, adding a check constraint for a new column is as simple as:
@@ -172,7 +142,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   ### Handling foreign key constraints in changesets
 
-  Unfortunately, unlike other databases, SQLite3 does not provide the precise name of
+  Unfortunately, unlike other databases, libSQL does not provide the precise name of
   the constraint violated, but only the columns within that constraint (if it provides
   any information at all). Because of this, changeset functions like
   `Ecto.Changeset.foreign_key_constraint/3` may not work at all.
@@ -181,8 +151,8 @@ defmodule Ecto.Adapters.SQLite3 do
   the violated constraint, which you annotate in your changeset so that Ecto can convert
   the constraint violation into the correct updated changeset when the constraint is hit
   during a `c:Ecto.Repo.update/2` or `c:Ecto.Repo.insert/2` operation. Since we cannot
-  get the name of the violated constraint back from SQLite3 at `INSERT` or `UPDATE`
-  time, there is no way to effectively use these changeset functions. This is a SQLite3
+  get the name of the violated constraint back from libSQL at `INSERT` or `UPDATE`
+  time, there is no way to effectively use these changeset functions. This is a libSQL
   limitation.
 
   See [this GitHub issue](https://github.com/elixir-sqlite/ecto_sqlite3/issues/42) for
@@ -190,14 +160,14 @@ defmodule Ecto.Adapters.SQLite3 do
 
   ### Schemaless queries
 
-  Using [schemaless Ecto queries][7] will not work well with SQLite. This is because
-  the Ecto SQLite adapter relies heavily on the schema to support a rich array of Elixir
-  types, despite the fact SQLite only has [five storage classes][5]. The query will still
+  Using [schemaless Ecto queries][7] will not work well with libSQL. This is because
+  the Ecto libSQL adapter relies heavily on the schema to support a rich array of Elixir
+  types, despite the fact libSQL only has [five storage classes][5]. The query will still
   work and return data, but you will need to do this mapping on your own.
 
   ### Transaction mode
 
-  By default, [SQLite transactions][8] run in `DEFERRED` mode. However, in
+  By default, [libSQL transactions][8] run in `DEFERRED` mode. However, in
   web applications with a balanced load of reads and writes, using  `IMMEDIATE`
   mode may yield better performance.
 
@@ -248,7 +218,7 @@ defmodule Ecto.Adapters.SQLite3 do
   @behaviour Ecto.Adapter.Storage
   @behaviour Ecto.Adapter.Structure
 
-  alias Ecto.Adapters.SQLite3.Codec
+  alias Ecto.Adapters.LibSQL.Codec
 
   @impl Ecto.Adapter.Storage
   def storage_down(options) do
@@ -285,12 +255,13 @@ defmodule Ecto.Adapters.SQLite3 do
       is_nil(database) ->
         raise ArgumentError,
               """
-              No SQLite database path specified. Please check the configuration for your Repo.
+              No libSQL database path specified. Please check the configuration for your Repo.
               Your config/*.exs file should have something like this in it:
 
                 config :my_app, MyApp.Repo,
-                  adapter: Ecto.Adapters.SQLite3,
-                  database: "/path/to/sqlite/database"
+                  adapter: Ecto.Adapters.LibSQL,
+                  mode: :local,
+                  path: "/path/to/database"
               """
 
       File.exists?(database) ->

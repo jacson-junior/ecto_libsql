@@ -1,4 +1,4 @@
-defmodule Ecto.Adapters.SQLite3.Connection do
+defmodule Ecto.Adapters.LibSQL.Connection do
   @moduledoc false
 
   @behaviour Ecto.Adapters.SQL.Connection
@@ -14,7 +14,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   alias Ecto.Query.QueryExpr
   alias Ecto.Query.WithExpr
 
-  import Ecto.Adapters.SQLite3.DataType
+  import Ecto.Adapters.LibSQL.DataType
 
   @parent_as __MODULE__
 
@@ -95,7 +95,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def query_many(_conn, _sql, _params, _opts) do
-    raise RuntimeError, "query_many is not supported in the SQLite3 adapter"
+    raise RuntimeError, "query_many is not supported in the libSQL adapter"
   end
 
   @impl true
@@ -105,7 +105,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   # we want to return the name of the underlying index that caused
-  # the constraint error, but in SQLite as far as I can tell there
+  # the constraint error, but in libSQL as far as I can tell there
   # is no way to do this, so we name the index according to ecto
   # convention, even if technically it _could_ have a different name
   defp constraint_name_hack(constraint) do
@@ -149,7 +149,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   def to_constraints(%Exqlite.Error{message: "FOREIGN KEY constraint failed"}, _opts) do
-    # unfortunately we have no other date from SQLite
+    # unfortunately we have no other date from libSQL
     [foreign_key: nil]
   end
 
@@ -168,7 +168,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def all(%Ecto.Query{lock: lock}) when lock != nil do
-    raise ArgumentError, "locks are not supported by SQLite3"
+    raise ArgumentError, "locks are not supported by libSQL"
   end
 
   def all(query, as_prefix \\ []) do
@@ -237,7 +237,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   @impl true
   def delete_all(%Ecto.Query{joins: [_ | _]}) do
     # TODO: It is supported but not in the traditional sense
-    raise ArgumentError, "JOINS are not supported on DELETE statements by SQLite"
+    raise ArgumentError, "JOINS are not supported on DELETE statements by libSQL"
   end
 
   def delete_all(query) do
@@ -355,7 +355,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
     IO.iodata_to_binary(["EXPLAIN ", query])
   end
 
-  # Mimics the ASCII format of the sqlite CLI
+  # Mimics the ASCII format of the libSQL CLI
   defp format_query_plan_explain(%{rows: rows}) do
     {lines, _} =
       rows
@@ -381,7 +381,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def execute_ddl({_command, %Table{options: options}, _}) when is_list(options) do
-    raise ArgumentError, "SQLite3 adapter does not support keyword lists in :options"
+    raise ArgumentError, "libSQL adapter does not support keyword lists in :options"
   end
 
   def execute_ddl({:create, %Table{} = table, columns}) do
@@ -461,27 +461,27 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def execute_ddl({_, %Index{concurrently: true}}) do
-    raise ArgumentError, "`concurrently` is not supported with SQLite3"
+    raise ArgumentError, "`concurrently` is not supported with libSQL"
   end
 
   @impl true
   def execute_ddl({_, %Index{only: true}}) do
-    raise ArgumentError, "`only` is not supported with SQLite3"
+    raise ArgumentError, "`only` is not supported with libSQL"
   end
 
   @impl true
   def execute_ddl({_, %Index{include: x}}) when length(x) != 0 do
-    raise ArgumentError, "`include` is not supported with SQLite3"
+    raise ArgumentError, "`include` is not supported with libSQL"
   end
 
   @impl true
   def execute_ddl({_, %Index{using: x}}) when not is_nil(x) do
-    raise ArgumentError, "`using` is not supported with SQLite3"
+    raise ArgumentError, "`using` is not supported with libSQL"
   end
 
   @impl true
   def execute_ddl({_, %Index{nulls_distinct: x}}) when not is_nil(x) do
-    raise ArgumentError, "`nulls_distinct` is not supported with SQLite3"
+    raise ArgumentError, "`nulls_distinct` is not supported with libSQL"
   end
 
   @impl true
@@ -541,7 +541,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def execute_ddl({:drop_if_exists, %Index{concurrently: true}}) do
-    raise ArgumentError, "`concurrently` is not supported with SQLite3"
+    raise ArgumentError, "`concurrently` is not supported with libSQL"
   end
 
   @impl true
@@ -590,7 +590,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   @impl true
   def execute_ddl(keyword) when is_list(keyword) do
-    raise ArgumentError, "SQLite3 adapter does not support keyword lists in execute"
+    raise ArgumentError, "libSQL adapter does not support keyword lists in execute"
   end
 
   @impl true
@@ -635,7 +635,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   def execute_ddl({:create, %Constraint{}}) do
-    raise ArgumentError, "SQLite3 does not support ALTER TABLE ADD CONSTRAINT."
+    raise ArgumentError, "libSQL does not support ALTER TABLE ADD CONSTRAINT."
   end
 
   def execute_ddl({:drop, %Index{} = index}) do
@@ -665,11 +665,11 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   def execute_ddl({:drop, %Constraint{}, _mode}) do
-    raise ArgumentError, "SQLite3 does not support ALTER TABLE DROP CONSTRAINT."
+    raise ArgumentError, "libSQL does not support ALTER TABLE DROP CONSTRAINT."
   end
 
   def execute_ddl({:drop_if_exists, %Constraint{}, _mode}) do
-    raise ArgumentError, "SQLite3 does not support ALTER TABLE DROP CONSTRAINT."
+    raise ArgumentError, "libSQL does not support ALTER TABLE DROP CONSTRAINT."
   end
 
   def execute_ddl({:rename, %Table{} = current_table, %Table{} = new_table}) do
@@ -706,7 +706,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   def execute_ddl(string) when is_binary(string), do: [string]
 
   def execute_ddl(keyword) when is_list(keyword) do
-    raise ArgumentError, "SQLite3 adapter does not support keyword lists in execute"
+    raise ArgumentError, "libSQL adapter does not support keyword lists in execute"
   end
 
   @impl true
@@ -728,11 +728,11 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp on_conflict({:replace_all, _, {:constraint, _}}, _header) do
-    raise ArgumentError, "Upsert in SQLite3 does not support ON CONSTRAINT"
+    raise ArgumentError, "Upsert in libSQL does not support ON CONSTRAINT"
   end
 
   defp on_conflict({:replace_all, _, []}, _header) do
-    raise ArgumentError, "Upsert in SQLite3 requires :conflict_target"
+    raise ArgumentError, "Upsert in libSQL requires :conflict_target"
   end
 
   defp on_conflict({:replace_all, _, targets}, header) do
@@ -796,7 +796,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
     intersperse_reduce(values, ?,, counter, fn
       nil, _counter ->
         raise ArgumentError,
-              "Cell-wise default values are not supported on INSERT statements by SQLite3"
+              "Cell-wise default values are not supported on INSERT statements by libSQL"
 
       {%Ecto.Query{} = query, params_counter}, counter ->
         {[?(, all(query), ?)], counter + params_counter}
@@ -850,7 +850,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp distinct(%ByExpr{expr: exprs}, _sources, query) when is_list(exprs) do
     raise Ecto.QueryError,
       query: query,
-      message: "DISTINCT with multiple columns is not supported by SQLite3"
+      message: "DISTINCT with multiple columns is not supported by libSQL"
   end
 
   defp select(%{select: %{fields: fields}, distinct: distinct} = query, sources) do
@@ -870,7 +870,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
             raise Ecto.QueryError,
               query: query,
               message: """
-              SQLite3 does not support selecting all fields from #{source} \
+              libSQL does not support selecting all fields from #{source} \
               without a schema. Please specify a schema or specify exactly \
               which fields you want to select\
               """
@@ -973,19 +973,19 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp update_op(:push, _quoted_key, _value, _sources, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "Arrays are not supported for SQLite3"
+      message: "Arrays are not supported for libSQL"
   end
 
   defp update_op(:pull, _quoted_key, _value, _sources, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "Arrays are not supported for SQLite3"
+      message: "Arrays are not supported for libSQL"
   end
 
   defp update_op(command, _quoted_key, _value, _sources, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "Unknown update operation #{inspect(command)} for SQLite3"
+      message: "Unknown update operation #{inspect(command)} for libSQL"
   end
 
   defp using_join(%{joins: []}, _kind, _prefix, _sources), do: {[], []}
@@ -1034,13 +1034,13 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp assert_valid_join(%JoinExpr{hints: hints}, query) when hints != [] do
     raise Ecto.QueryError,
       query: query,
-      message: "join hints are not supported by SQLite3"
+      message: "join hints are not supported by libSQL"
   end
 
   defp assert_valid_join(%JoinExpr{source: {:values, _, _}}, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "SQLite3 adapter does not support values lists"
+      message: "libSQL adapter does not support values lists"
   end
 
   defp assert_valid_join(_join_expr, _query), do: :ok
@@ -1147,7 +1147,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
       _ ->
         raise Ecto.QueryError,
           query: query,
-          message: "#{dir} is not supported in ORDER BY in SQLite3"
+          message: "#{dir} is not supported in ORDER BY in libSQL"
     end
   end
 
@@ -1180,19 +1180,19 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp combination({:except_all, query}, _) do
     raise Ecto.QueryError,
       query: query,
-      message: "SQLite3 does not support EXCEPT ALL"
+      message: "libSQL does not support EXCEPT ALL"
   end
 
   defp combination({:intersect_all, query}, _) do
     raise Ecto.QueryError,
       query: query,
-      message: "SQLite3 does not INTERSECT ALL"
+      message: "libSQL does not INTERSECT ALL"
   end
 
   def lock(query, _sources) do
     raise Ecto.QueryError,
       query: query,
-      message: "SQLite3 does not support locks"
+      message: "libSQL does not support locks"
   end
 
   defp boolean(_name, [], _sources, _query), do: []
@@ -1255,7 +1255,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
     ~c"?"
   end
 
-  # workaround for the fact that SQLite3 as of 3.35.4 does not support specifying table
+  # workaround for the fact that libSQL as of 3.35.4 does not support specifying table
   # in the returning clause. when a later release adds the ability, this code can be deleted
   defp expr(
          {{:., _, [{:parent_as, _, [{:&, _, [_idx]}]}, field]}, _, []},
@@ -1266,7 +1266,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
     quote_name(field)
   end
 
-  # workaround for the fact that SQLite3 as of 3.35.4 does not support specifying table
+  # workaround for the fact that libSQL as of 3.35.4 does not support specifying table
   # in the returning clause. when a later release adds the ability, this code can be deleted
   defp expr({{:., _, [{:&, _, [_idx]}, field]}, _, []}, _sources, %{returning: true})
        when is_atom(field) do
@@ -1356,7 +1356,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
        when is_list(kw) or tuple_size(kw) == 3 do
     raise Ecto.QueryError,
       query: query,
-      message: "SQLite3 adapter does not support keyword or interpolated fragments"
+      message: "libSQL adapter does not support keyword or interpolated fragments"
   end
 
   defp expr({:fragment, _, parts}, sources, query) do
@@ -1369,7 +1369,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp expr({:values, _, _}, _, _query) do
-    raise ArgumentError, "SQLite3 adapter does not support values lists"
+    raise ArgumentError, "libSQL adapter does not support values lists"
   end
 
   defp expr({:literal, _, [literal]}, _sources, _query) do
@@ -1420,7 +1420,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp expr({:ilike, _, [_, _]}, _sources, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "ilike is not supported by SQLite3"
+      message: "ilike is not supported by libSQL"
   end
 
   defp expr({:over, _, [agg, name]}, sources, query) when is_atom(name) do
@@ -1440,7 +1440,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp expr({:count, _, [{:&, _, [_]}]}, _sources, query) do
     raise Ecto.QueryError,
       query: query,
-      message: "The argument to `count/1` must be a column in SQLite3"
+      message: "The argument to `count/1` must be a column in libSQL"
   end
 
   defp expr({:json_extract_path, _, [expr, path]}, sources, query) do
@@ -1492,7 +1492,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp expr(list, _sources, query) when is_list(list) do
     raise Ecto.QueryError,
       query: query,
-      message: "Array literals are not supported by SQLite3"
+      message: "Array literals are not supported by libSQL"
   end
 
   defp expr(%Decimal{} = decimal, _sources, _query) do
@@ -1558,7 +1558,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   def interval(_, "microsecond", _sources) do
     raise ArgumentError,
-          "SQLite does not support microsecond precision in datetime intervals"
+          "libSQL does not support microsecond precision in datetime intervals"
   end
 
   def interval(count, "millisecond", sources) do
@@ -1667,7 +1667,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
     ]
   end
 
-  # If we are adding a DATETIME column with the NOT NULL constraint, SQLite
+  # If we are adding a DATETIME column with the NOT NULL constraint, libSQL
   # will force us to give it a DEFAULT value. The only default value
   # that makes sense is CURRENT_TIMESTAMP, but when adding a column to a
   # table, defaults must be constant values.
@@ -1698,7 +1698,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp column_change(_table, {:modify, _name, _type, _opts}) do
-    raise ArgumentError, "ALTER COLUMN not supported by SQLite3"
+    raise ArgumentError, "ALTER COLUMN not supported by libSQL"
   end
 
   defp column_change(table, {:remove, name, _type, _opts}) do
@@ -1713,7 +1713,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp column_change(_table, _) do
-    raise ArgumentError, "Not supported by SQLite3"
+    raise ArgumentError, "Not supported by libSQL"
   end
 
   defp column_options(table, type, opts) do
@@ -1785,7 +1785,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp options_expr(nil), do: []
 
   defp options_expr(options) when is_list(options) do
-    raise ArgumentError, "SQLite3 adapter does not support keyword lists in :options"
+    raise ArgumentError, "libSQL adapter does not support keyword lists in :options"
   end
 
   defp options_expr(options), do: [?\s, to_string(options)]
@@ -1918,7 +1918,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   defp quote_table(nil, name), do: quote_entity(name)
 
   defp quote_table(prefix, _name) when is_atom(prefix) or is_binary(prefix) do
-    raise ArgumentError, "SQLite3 does not support table prefixes"
+    raise ArgumentError, "libSQL does not support table prefixes"
   end
 
   defp quote_table(_, name), do: quote_entity(name)

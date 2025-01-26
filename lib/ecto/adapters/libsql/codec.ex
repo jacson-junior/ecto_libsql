@@ -1,4 +1,4 @@
-defmodule Ecto.Adapters.SQLite3.Codec do
+defmodule Ecto.Adapters.LibSQL.Codec do
   @moduledoc false
 
   def bool_decode(0), do: {:ok, false}
