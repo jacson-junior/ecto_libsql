@@ -1,4 +1,4 @@
-defmodule EctoSQLite3.MixProject do
+defmodule EctoLibSQL.MixProject do
   use Mix.Project
 
   @version "0.1.0"
@@ -9,17 +9,17 @@ defmodule EctoSQLite3.MixProject do
       version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      source_url: "https://github.com/elixir-sqlite/ecto_sqlite3",
-      homepage_url: "https://github.com/elixir-sqlite/ecto_sqlite3",
+      source_url: "https://github.com/jacson-junior/ecto_libsql",
+      homepage_url: "https://github.com/jacson-junior/ecto_libsql",
       deps: deps(),
       package: package(),
       description: description(),
-      test_paths: test_paths(System.get_env("EXQLITE_INTEGRATION")),
+      test_paths: test_paths(System.get_env("EX_LIBSQL_INTEGRATION")),
       elixirc_paths: elixirc_paths(Mix.env()),
       aliases: aliases(),
 
       # Docs
-      name: "Ecto SQLite3",
+      name: "Ecto libSQL",
       docs: docs()
     ]
   end
@@ -37,9 +37,9 @@ defmodule EctoSQLite3.MixProject do
       {:decimal, "~> 1.6 or ~> 2.0"},
       {:ecto_sql, "~> 3.12"},
       {:ecto, "~> 3.12"},
-      {:exqlite, "~> 0.22"},
+      {:ex_libsql, path: "../ex_libsql"},
       {:ex_doc, "~> 0.27", only: [:dev], runtime: false},
-      {:jason, ">= 0.0.0", only: [:dev, :test, :docs]},
+      {:jason, ">= 0.0.0"},
       {:temp, "~> 0.4", only: [:test]},
       {:credo, "~> 1.6", only: [:dev, :test, :docs]},
 
@@ -52,7 +52,7 @@ defmodule EctoSQLite3.MixProject do
   end
 
   defp description do
-    "An SQLite3 Ecto3 adapter."
+    "An libSQL Ecto3 adapter."
   end
 
   defp package do
@@ -64,20 +64,19 @@ defmodule EctoSQLite3.MixProject do
         README.md
         LICENSE
       ),
-      name: "ecto_sqlite3",
+      name: "ecto_libsql",
       licenses: ["MIT"],
       links: %{
-        "GitHub" => "https://github.com/elixir-sqlite/ecto_sqlite3",
-        "docs" => "https://hexdocs.pm/ecto_sqlite3"
+        "GitHub" => "https://github.com/jacson-junior/ecto_libsql"
       }
     ]
   end
 
   defp docs do
     [
-      main: "Ecto.Adapters.SQLite3",
+      main: "Ecto.Adapters.LibSQL",
       source_ref: "v#{@version}",
-      source_url: "https://github.com/elixir-sqlite/ecto_sqlite3"
+      source_url: "https://github.com/jacson-junior/ecto_libsql"
     ]
   end
 
