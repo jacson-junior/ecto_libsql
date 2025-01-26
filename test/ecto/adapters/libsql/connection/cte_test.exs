@@ -1,11 +1,11 @@
-defmodule Ecto.Adapters.SQLite3.Connection.CteTest do
+defmodule Ecto.Adapters.LibSQL.Connection.CteTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
-  alias EctoSQLite3.Schemas.Schema2
+  alias EctoLibSQL.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema2
 
   test "CTE" do
     initial_query =
@@ -176,7 +176,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.CteTest do
       |> plan()
 
     assert_raise Ecto.QueryError,
-                 ~r/join `:left_lateral` not supported by SQLite3/,
+                 ~r/join `:left_lateral` not supported by LibSQL/,
                  fn ->
                    all(query)
                  end

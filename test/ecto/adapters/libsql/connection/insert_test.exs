@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3.Connection.InsertTest do
+defmodule Ecto.Adapters.LibSQL.Connection.InsertTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   test "insert" do
     query = insert(nil, "schema", [:x, :y], [[:x, :y]], {:raise, [], []}, [:id])
@@ -25,7 +25,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.InsertTest do
     query = insert(nil, "schema", [], [[]], {:raise, [], []}, [])
     assert query == ~s{INSERT INTO "schema" DEFAULT VALUES}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       insert("prefix", "schema", [], [[]], {:raise, [], []}, [])
     end
 
@@ -34,7 +34,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.InsertTest do
 
     assert_raise(
       ArgumentError,
-      "Cell-wise default values are not supported on INSERT statements by SQLite3",
+      "Cell-wise default values are not supported on INSERT statements by libSQL",
       fn ->
         insert(nil, "schema", [:x, :y], [[:x, :y], [nil, :z]], {:raise, [], []}, [:id])
       end
@@ -76,7 +76,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.InsertTest do
     assert query ==
              ~s{INSERT INTO "schema" AS s0 ("x","y") VALUES (?1,?2) ON CONFLICT foobar DO UPDATE SET "z" = 'foo' RETURNING "z"}
 
-    assert_raise ArgumentError, "Upsert in SQLite3 requires :conflict_target", fn ->
+    assert_raise ArgumentError, "Upsert in libSQL requires :conflict_target", fn ->
       conflict_target = []
 
       insert(
@@ -90,7 +90,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.InsertTest do
     end
 
     assert_raise ArgumentError,
-                 "Upsert in SQLite3 does not support ON CONSTRAINT",
+                 "Upsert in libSQL does not support ON CONSTRAINT",
                  fn ->
                    insert(
                      nil,

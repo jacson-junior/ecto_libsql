@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3.Connection.SelectTest do
+defmodule Ecto.Adapters.LibSQL.Connection.SelectTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   alias EctoSQLite3.Schemas.Schema
 

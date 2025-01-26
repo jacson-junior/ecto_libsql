@@ -1,10 +1,10 @@
-defmodule Ecto.Adapters.SQLite3.Connection.GroupByTest do
+defmodule Ecto.Adapters.LibSQL.Connection.GroupByTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "group_by can reference the alias of a selected value with selected_as/1" do
     query =

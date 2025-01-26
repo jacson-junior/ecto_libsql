@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3ConnTest do
+defmodule Ecto.Adapters.LibSQLConnTest do
   use ExUnit.Case
 
-  alias Ecto.Adapters.SQLite3
+  alias Ecto.Adapters.LibSQL
 
   @uuid_regex ~r/^[[:xdigit:]]{8}\b-[[:xdigit:]]{4}\b-[[:xdigit:]]{4}\b-[[:xdigit:]]{4}\b-[[:xdigit:]]{12}$/
 
@@ -42,8 +42,8 @@ defmodule Ecto.Adapters.SQLite3ConnTest do
         Your config/*.exs file should have something like this in it:
 
           config :my_app, MyApp.Repo,
-            adapter: Ecto.Adapters.SQLite3,
-            database: "/path/to/sqlite/database"
+            adapter: Ecto.Adapters.LibSQL,
+            database: "/path/to/database"
         """,
         fn -> SQLite3.storage_up(mumble: "no database here") == :ok end
       )

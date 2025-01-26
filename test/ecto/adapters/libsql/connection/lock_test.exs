@@ -1,13 +1,13 @@
-defmodule Ecto.Adapters.SQLite3.Connection.LockTest do
+defmodule Ecto.Adapters.LibSQL.Connection.LockTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "locks are unsupported" do
-    assert_raise ArgumentError, "locks are not supported by SQLite3", fn ->
+    assert_raise ArgumentError, "locks are not supported by libSQL", fn ->
       Schema
       |> lock("FOR SHARE NOWAIT")
       |> select([], true)
@@ -15,7 +15,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.LockTest do
       |> all()
     end
 
-    assert_raise ArgumentError, "locks are not supported by SQLite3", fn ->
+    assert_raise ArgumentError, "locks are not supported by libSQL", fn ->
       Schema
       |> lock([p], fragment("UPDATE on ?", p))
       |> select([], true)

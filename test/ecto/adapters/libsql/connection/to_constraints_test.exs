@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.Connection.ToConstraintsTest do
+defmodule Ecto.Adapters.LibSQL.Connection.ToConstraintsTest do
   use ExUnit.Case, async: true
 
-  alias Ecto.Adapters.SQLite3.Connection
+  alias Ecto.Adapters.LibSQL.Connection
 
   test "unique index" do
     # created with:

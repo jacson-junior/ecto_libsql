@@ -1,10 +1,10 @@
-defmodule Ecto.Adapters.SQLite3.Connection.BinaryUUIDTest do
+defmodule Ecto.Adapters.LibSQL.Connection.BinaryUUIDTest do
   use ExUnit.Case, async: false
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   setup_all do
     Application.put_env(:ecto_libsql, :uuid_type, :binary)

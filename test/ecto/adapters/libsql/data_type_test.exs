@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.DataTypeTest do
+defmodule Ecto.Adapters.LibSQL.DataTypeTest do
   use ExUnit.Case, async: false
 
-  alias Ecto.Adapters.SQLite3.DataType
+  alias Ecto.Adapters.LibSQL.DataType
 
   setup do
     Application.put_env(:ecto_libsql, :binary_id_type, :string)

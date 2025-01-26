@@ -1,10 +1,10 @@
-defmodule Ecto.Adapters.SQLite3.Connection.FromTest do
+defmodule Ecto.Adapters.LibSQL.Connection.FromTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "using just a schema" do
     query =
@@ -62,7 +62,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.FromTest do
 
     test "raises when selecting all fields without a schema" do
       assert_raise Ecto.QueryError,
-                   ~r"SQLite3 does not support selecting all fields from \"posts\" without a schema",
+                   ~r"libSQL does not support selecting all fields from \"posts\" without a schema",
                    fn ->
                      all(from(p in "posts", select: p) |> plan())
                    end
@@ -136,7 +136,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.FromTest do
 
     assert ~s{SELECT f0."x" FROM (select_rows(arg)) AS f0} == all(query)
 
-    assert_raise Ecto.QueryError, ~r/^SQLite3 does not support/, fn ->
+    assert_raise Ecto.QueryError, ~r/^libSQL does not support/, fn ->
       from(f in fragment("select ? as x", ^"abc"))
       |> select([f], f)
       |> plan()

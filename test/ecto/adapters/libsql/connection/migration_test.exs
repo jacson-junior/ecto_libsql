@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
+defmodule Ecto.Adapters.LibSQL.Connection.MigrationTest do
   use ExUnit.Case, async: true
 
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
   import Ecto.Migration, only: [table: 1, table: 2, index: 2, index: 3, constraint: 3]
 
   alias Ecto.Migration.Reference
@@ -43,7 +43,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
       {:create, table(:posts, prefix: :foo),
        [{:add, :category_0, %Reference{table: :categories}, []}]}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(create)
     end
   end
@@ -296,7 +296,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
   test "drop table with prefix" do
     drop = {:drop, table(:posts, prefix: :foo)}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(drop)
     end
   end
@@ -328,7 +328,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
       {:alter, table(:posts, prefix: :foo),
        [{:add, :author_id, %Reference{table: :author}, []}]}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(alter)
     end
   end
@@ -374,14 +374,14 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
   test "create index with prefix" do
     create = {:create, index(:posts, [:category_id, :permalink], prefix: :foo)}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(create)
     end
 
     create =
       {:create, index(:posts, ["lower(permalink)"], name: "posts$main", prefix: :foo)}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(create)
     end
   end
@@ -396,7 +396,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
              """
            ]
 
-    # NOTE: Comments are not supported by SQLite. DDL query generator will ignore them.
+    # NOTE: Comments are not supported by libSQL. DDL query generator will ignore them.
   end
 
   test "create unique index" do
@@ -471,7 +471,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
   test "drop index with prefix" do
     drop = {:drop, index(:posts, [:id], name: "posts$main", prefix: :foo), :restrict}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, ".ibSQL does not support table prefixes", fn ->
       execute_ddl(drop)
     end
   end
@@ -487,7 +487,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
 
   test "drop constraint" do
     assert_raise ArgumentError,
-                 ~r/SQLite3 does not support ALTER TABLE DROP CONSTRAINT./,
+                 ~r/libSQL does not support ALTER TABLE DROP CONSTRAINT./,
                  fn ->
                    execute_ddl(
                      {:drop,
@@ -499,7 +499,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
 
   test "drop_if_exists constraint" do
     assert_raise ArgumentError,
-                 ~r/SQLite3 does not support ALTER TABLE DROP CONSTRAINT./,
+                 ~r/libSQL does not support ALTER TABLE DROP CONSTRAINT./,
                  fn ->
                    execute_ddl(
                      {:drop_if_exists,
@@ -517,7 +517,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
   test "rename table with prefix" do
     rename = {:rename, table(:posts, prefix: :foo), table(:new_posts, prefix: :foo)}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(rename)
     end
   end
@@ -533,7 +533,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.MigrationTest do
   test "rename column in prefixed table" do
     rename = {:rename, table(:posts, prefix: :foo), :given_name, :first_name}
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       execute_ddl(rename)
     end
   end

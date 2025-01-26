@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.Connection.BuildExplainQueryTest do
+defmodule Ecto.Adapters.LibSQL.Connection.BuildExplainQueryTest do
   use ExUnit.Case, async: true
 
-  alias Ecto.Adapters.SQLite3.Connection
+  alias Ecto.Adapters.LibSQL.Connection
 
   test "build_explain_query" do
     assert Connection.build_explain_query("SELECT 1", :query_plan) ==

@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3.Connection.UpdateAllTest do
+defmodule Ecto.Adapters.LibSQL.Connection.UpdateAllTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   alias Ecto.Adapter.Queryable
   alias EctoSQLite3.Schemas.Schema
@@ -110,7 +110,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.UpdateAllTest do
       |> update([_], set: [x: ^100])
 
     {planned_query, cast_params, dump_params} =
-      Queryable.plan_query(:update_all, Ecto.Adapters.SQLite3, query)
+      Queryable.plan_query(:update_all, Ecto.Adapters.LibSQL, query)
 
     assert ~s{UPDATE "schema" AS s0 SET "x" = ? FROM } <>
              ~s{(SELECT ss0."id" AS "id", ss0."x" AS "x", ss0."y" AS "y", } <>
@@ -123,7 +123,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.UpdateAllTest do
   end
 
   test "update all with prefix" do
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       from(m in Schema, update: [set: [x: 0]])
       |> Map.put(:prefix, "prefix")
       |> plan(:update_all)

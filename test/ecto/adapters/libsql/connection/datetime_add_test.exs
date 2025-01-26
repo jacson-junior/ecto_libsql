@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3.Connection.DatetimeAddTest do
+defmodule Ecto.Adapters.LibSQL.Connection.DatetimeAddTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   test "add a month" do
     query =

@@ -9,7 +9,7 @@ Code.require_file("#{ecto}/integration_test/support/schemas.exs", __DIR__)
 alias Ecto.Integration.TestRepo
 
 Application.put_env(:ecto_libsql, TestRepo,
-  adapter: Ecto.Adapters.SQLite3,
+  adapter: Ecto.Adapters.LibSQL,
   database: "/tmp/exqlite_sandbox_test.db",
   pool: Ecto.Adapters.SQL.Sandbox,
   show_sensitive_data_on_connection_error: true
@@ -26,11 +26,11 @@ defmodule Ecto.Integration.Case do
   end
 end
 
-{:ok, _} = Ecto.Adapters.SQLite3.ensure_all_started(TestRepo.config(), :temporary)
+{:ok, _} = Ecto.Adapters.LibSQL.ensure_all_started(TestRepo.config(), :temporary)
 
 # Load up the repository, start it, and run migrations
-_ = Ecto.Adapters.SQLite3.storage_down(TestRepo.config())
-:ok = Ecto.Adapters.SQLite3.storage_up(TestRepo.config())
+_ = Ecto.Adapters.LibSQL.storage_down(TestRepo.config())
+:ok = Ecto.Adapters.LibSQL.storage_up(TestRepo.config())
 
 {:ok, _} = TestRepo.start_link()
 

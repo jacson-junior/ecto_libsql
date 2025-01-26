@@ -1,12 +1,12 @@
-defmodule Ecto.Adapters.SQLite3.Connection.DeleteAllTest do
+defmodule Ecto.Adapters.LibSQL.Connection.DeleteAllTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   alias Ecto.Queryable
-  alias EctoSQLite3.Schemas.Schema
-  alias EctoSQLite3.Schemas.Schema2
+  alias EctoLibSQL.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema2
 
   test "delete all with only the schema" do
     query =
@@ -65,7 +65,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.DeleteAllTest do
   end
 
   test "delete all with prefix" do
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       Schema
       |> Ecto.Queryable.to_query()
       |> Map.put(:prefix, "prefix")
@@ -73,7 +73,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.DeleteAllTest do
       |> delete_all()
     end
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       Schema
       |> from(prefix: "first")
       |> Map.put(:prefix, "prefix")

@@ -1,10 +1,10 @@
-defmodule Ecto.Adapters.SQLite3.Connection.AggregatesTest do
+defmodule Ecto.Adapters.LibSQL.Connection.AggregatesTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "counts" do
     query =
@@ -21,7 +21,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.AggregatesTest do
       |> select([r], count(r))
       |> plan()
 
-    msg = ~r"The argument to `count/1` must be a column in SQLite3"
+    msg = ~r"The argument to `count/1` must be a column in libSQL"
 
     assert_raise Ecto.QueryError, msg, fn ->
       all(query)

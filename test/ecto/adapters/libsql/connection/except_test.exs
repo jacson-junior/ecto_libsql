@@ -1,10 +1,10 @@
-defmodule Ecto.Adapters.SQLite3.Connection.ExceptTest do
+defmodule Ecto.Adapters.LibSQL.Connection.ExceptTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "except and except all" do
     base_query =

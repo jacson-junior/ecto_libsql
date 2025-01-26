@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.UpdateTest do
+defmodule Ecto.Adapters.LibSQL.UpdateTest do
   use ExUnit.Case, async: true
 
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   test "update" do
     query = update(nil, "schema", [:x, :y], [id: 1], [])

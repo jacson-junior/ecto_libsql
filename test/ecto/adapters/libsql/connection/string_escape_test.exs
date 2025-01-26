@@ -1,8 +1,8 @@
-defmodule Ecto.Adapters.SQLite3.Connection.StringEscapeTest do
+defmodule Ecto.Adapters.LibSQL.Connection.StringEscapeTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   test "escapes escaped characters" do
     query =

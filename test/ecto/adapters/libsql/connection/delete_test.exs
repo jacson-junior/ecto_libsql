@@ -1,7 +1,7 @@
-defmodule Ecto.Adapters.SQLite3.DeleteTest do
+defmodule Ecto.Adapters.LibSQL.DeleteTest do
   use ExUnit.Case, async: true
 
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
   test "delete" do
     query = delete(nil, "schema", [x: 1, y: 2], [])

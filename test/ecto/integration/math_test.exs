@@ -109,7 +109,7 @@ defmodule Ecto.Integration.MathTest do
 
       query = from(p in Product, select: fragment("acos(?)", p.price))
 
-      # Right now, sqlite will return the acos function as an IEEE float
+      # Right now, libSQL will return the acos function as an IEEE float
       [num] = TestRepo.all(query)
       assert_in_delta num, 1.266103672779499, 0.000000000000001
     end

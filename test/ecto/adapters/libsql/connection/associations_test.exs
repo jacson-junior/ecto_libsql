@@ -1,11 +1,11 @@
-defmodule Ecto.Adapters.SQLite3.Connection.AssociationsTest do
+defmodule Ecto.Adapters.LibSQL.Connection.AssociationsTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
-  alias EctoSQLite3.Schemas.Schema2
+  alias EctoLibSQL.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema2
 
   test "association join belongs_to" do
     query =

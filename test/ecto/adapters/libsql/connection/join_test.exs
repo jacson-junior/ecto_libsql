@@ -1,11 +1,11 @@
-defmodule Ecto.Adapters.SQLite3.Connection.JoinTest do
+defmodule Ecto.Adapters.LibSQL.Connection.JoinTest do
   use ExUnit.Case, async: true
 
   import Ecto.Query
-  import Ecto.Adapters.SQLite3.TestHelpers
+  import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
-  alias EctoSQLite3.Schemas.Schema2
+  alias EctoLibSQL.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema2
 
   test "join" do
     query =
@@ -29,7 +29,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.JoinTest do
   end
 
   test "join with hints are not supported" do
-    assert_raise Ecto.QueryError, ~r/join hints are not supported by SQLite3/, fn ->
+    assert_raise Ecto.QueryError, ~r/join hints are not supported by libSQL/, fn ->
       Schema
       |> join(:inner, [p], q in Schema2,
         hints: ["USE INDEX FOO", "USE INDEX BAR"],
@@ -115,7 +115,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.JoinTest do
   end
 
   test "join with prefix is not supported" do
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       Schema
       |> join(:inner, [p], q in Schema2, on: p.x == q.z)
       |> select([], true)
@@ -124,7 +124,7 @@ defmodule Ecto.Adapters.SQLite3.Connection.JoinTest do
       |> all()
     end
 
-    assert_raise ArgumentError, "SQLite3 does not support table prefixes", fn ->
+    assert_raise ArgumentError, "libSQL does not support table prefixes", fn ->
       Schema
       |> from(prefix: "first")
       |> join(:inner, [p], q in Schema2, on: p.x == q.z, prefix: "second")
