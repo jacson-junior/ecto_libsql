@@ -10,7 +10,8 @@ alias Ecto.Integration.TestRepo
 
 Application.put_env(:ecto_libsql, TestRepo,
   adapter: Ecto.Adapters.LibSQL,
-  database: "/tmp/ex_libsql_sandbox_test.db",
+  mode: :local,
+  path: "/tmp/ex_libsql_sandbox_test.db",
   pool: Ecto.Adapters.SQL.Sandbox,
   show_sensitive_data_on_connection_error: true
 )

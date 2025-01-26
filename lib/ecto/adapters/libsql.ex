@@ -201,7 +201,8 @@ defmodule Ecto.Adapters.LibSQL do
   `:mode` to `Repo.transaction/2`.
 
       config :my_app, MyApp.Repo,
-        database: "path/to/my/database.db",
+        mode: local,
+        path: "path/to/my/database.db",
         default_transaction_mode: :immediate
 
   [3]: https://www.sqlite.org/compile.html
@@ -222,7 +223,7 @@ defmodule Ecto.Adapters.LibSQL do
 
   @impl Ecto.Adapter.Storage
   def storage_down(options) do
-    db_path = Keyword.fetch!(options, :database)
+    db_path = Keyword.fetch!(options, :path)
 
     case File.rm(db_path) do
       :ok ->
@@ -248,11 +249,12 @@ defmodule Ecto.Adapters.LibSQL do
 
   @impl Ecto.Adapter.Storage
   def storage_up(options) do
-    database = Keyword.get(options, :database)
+    mode = Keyword.get(options, :database)
+    path = Keyword.get(options, :path)
     pool_size = Keyword.get(options, :pool_size)
 
     cond do
-      is_nil(database) ->
+      is_nil(path) ->
         raise ArgumentError,
               """
               No libSQL database path specified. Please check the configuration for your Repo.
@@ -264,10 +266,10 @@ defmodule Ecto.Adapters.LibSQL do
                   path: "/path/to/database"
               """
 
-      File.exists?(database) ->
+      File.exists?(path) ->
         {:error, :already_up}
 
-      database == ":memory:" && pool_size != 1 ->
+      mode == :memory && pool_size != 1 ->
         raise ArgumentError, """
         In memory databases must have a pool_size of 1
         """
