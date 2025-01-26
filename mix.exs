@@ -5,7 +5,7 @@ defmodule EctoSQLite3.MixProject do
 
   def project do
     [
-      app: :ecto_sqlite3,
+      app: :ecto_libsql,
       version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,

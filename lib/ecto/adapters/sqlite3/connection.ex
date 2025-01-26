@@ -1386,7 +1386,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
 
   defp expr({:datetime_add, _, [datetime, count, interval]}, sources, query) do
     format =
-      case Application.get_env(:ecto_sqlite3, :datetime_type) do
+      case Application.get_env(:ecto_libsql, :datetime_type) do
         :text_datetime ->
           "%Y-%m-%d %H:%M:%f000Z"
 
@@ -1506,7 +1506,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp expr(%Ecto.Query.Tagged{value: expr, type: :binary_id}, sources, query) do
-    case Application.get_env(:ecto_sqlite3, :binary_id_type, :string) do
+    case Application.get_env(:ecto_libsql, :binary_id_type, :string) do
       :string ->
         ["CAST(", expr(expr, sources, query), " AS ", column_type(:string, query), ?)]
 
@@ -1516,7 +1516,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp expr(%Ecto.Query.Tagged{value: expr, type: :uuid}, sources, query) do
-    case Application.get_env(:ecto_sqlite3, :uuid_type, :string) do
+    case Application.get_env(:ecto_libsql, :uuid_type, :string) do
       :string ->
         ["CAST(", expr(expr, sources, query), " AS ", column_type(:string, query), ?)]
 
@@ -1765,7 +1765,7 @@ defmodule Ecto.Adapters.SQLite3.Connection do
   end
 
   defp default_expr({:ok, value}) when is_map(value) or is_list(value) do
-    library = Application.get_env(:ecto_sqlite3, :json_library, Jason)
+    library = Application.get_env(:ecto_libsql, :json_library, Jason)
     expression = IO.iodata_to_binary(library.encode_to_iodata!(value))
 
     [" DEFAULT ('", escape_string(expression), "')"]

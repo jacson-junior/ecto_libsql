@@ -10,7 +10,7 @@ Code.require_file("#{ecto_sql}/integration_test/support/repo.exs", __DIR__)
 
 alias Ecto.Integration.TestRepo
 
-Application.put_env(:ecto_sqlite3, TestRepo,
+Application.put_env(:ecto_libsql, TestRepo,
   adapter: Ecto.Adapters.SQLite3,
   database: "/tmp/exqlite_integration_test.db",
   pool: Ecto.Adapters.SQL.Sandbox,
@@ -20,18 +20,18 @@ Application.put_env(:ecto_sqlite3, TestRepo,
 # Pool repo for non-async tests
 alias Ecto.Integration.PoolRepo
 
-Application.put_env(:ecto_sqlite3, PoolRepo,
+Application.put_env(:ecto_libsql, PoolRepo,
   adapter: Ecto.Adapters.SQLite3,
   database: "/tmp/exqlite_integration_pool_test.db",
   show_sensitive_data_on_connection_error: true
 )
 
 # needed since some of the integration tests rely on fetching env from :ecto_sql
-Application.put_env(:ecto_sql, TestRepo, Application.get_env(:ecto_sqlite3, TestRepo))
-Application.put_env(:ecto_sql, PoolRepo, Application.get_env(:ecto_sqlite3, PoolRepo))
+Application.put_env(:ecto_sql, TestRepo, Application.get_env(:ecto_libsql, TestRepo))
+Application.put_env(:ecto_sql, PoolRepo, Application.get_env(:ecto_libsql, PoolRepo))
 
 defmodule Ecto.Integration.PoolRepo do
-  use Ecto.Integration.Repo, otp_app: :ecto_sqlite3, adapter: Ecto.Adapters.SQLite3
+  use Ecto.Integration.Repo, otp_app: :ecto_libsql, adapter: Ecto.Adapters.SQLite3
 end
 
 Code.require_file "#{ecto}/integration_test/support/schemas.exs", __DIR__

@@ -7,12 +7,12 @@ defmodule Ecto.Adapters.SQLite3.Connection.BinaryUUIDTest do
   alias EctoSQLite3.Schemas.Schema
 
   setup_all do
-    Application.put_env(:ecto_sqlite3, :uuid_type, :binary)
-    Application.put_env(:ecto_sqlite3, :binary_id_type, :binary)
+    Application.put_env(:ecto_libsql, :uuid_type, :binary)
+    Application.put_env(:ecto_libsql, :binary_id_type, :binary)
 
     on_exit(fn ->
-      Application.put_env(:ecto_sqlite3, :uuid_type, :string)
-      Application.put_env(:ecto_sqlite3, :binary_id_type, :string)
+      Application.put_env(:ecto_libsql, :uuid_type, :string)
+      Application.put_env(:ecto_libsql, :binary_id_type, :string)
     end)
   end
 

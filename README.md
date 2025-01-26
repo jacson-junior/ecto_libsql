@@ -17,7 +17,7 @@ in Hexdocs.
 ```elixir
 defp deps do
   [
-    {:ecto_sqlite3, "~> 0.17"}
+    {:ecto_libsql, "~> 0.17"}
   ]
 end
 ```

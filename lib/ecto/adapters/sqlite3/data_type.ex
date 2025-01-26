@@ -44,14 +44,14 @@ defmodule Ecto.Adapters.SQLite3.DataType do
   end
 
   def column_type(:binary_id, _opts) do
-    case Application.get_env(:ecto_sqlite3, :binary_id_type, :string) do
+    case Application.get_env(:ecto_libsql, :binary_id_type, :string) do
       :string -> "TEXT"
       :binary -> "BLOB"
     end
   end
 
   def column_type(:uuid, _opts) do
-    case Application.get_env(:ecto_sqlite3, :uuid_type, :string) do
+    case Application.get_env(:ecto_libsql, :uuid_type, :string) do
       :string -> "TEXT"
       :binary -> "BLOB"
     end

@@ -197,13 +197,13 @@ defmodule Ecto.Adapters.SQLite3 do
 
   ### Transaction mode
 
-  By default, [SQLite transactions][8] run in `DEFERRED` mode. However, in 
-  web applications with a balanced load of reads and writes, using  `IMMEDIATE` 
+  By default, [SQLite transactions][8] run in `DEFERRED` mode. However, in
+  web applications with a balanced load of reads and writes, using  `IMMEDIATE`
   mode may yield better performance.
 
   Here are several ways to specify a different transaction mode:
 
-  **Pass `mode: :immediate` to `Repo.transaction/2`:** Use this approach to set 
+  **Pass `mode: :immediate` to `Repo.transaction/2`:** Use this approach to set
   the transaction mode for individual transactions.
 
       Multi.new()
@@ -212,8 +212,8 @@ defmodule Ecto.Adapters.SQLite3 do
       end)
       |> Repo.transaction(mode: :immediate)
 
-  **Define custom transaction functions:** Create wrappers, such as 
-  `Repo.immediate_transaction/2` or `Repo.deferred_transaction/2`, to easily 
+  **Define custom transaction functions:** Create wrappers, such as
+  `Repo.immediate_transaction/2` or `Repo.deferred_transaction/2`, to easily
   apply different modes where needed.
 
       defmodule MyApp.Repo do
@@ -226,7 +226,7 @@ defmodule Ecto.Adapters.SQLite3 do
         end
       end
 
-  **Set a global default:** Configure `:default_transaction_mode` to apply a 
+  **Set a global default:** Configure `:default_transaction_mode` to apply a
   preferred mode for all transactions, unless explicitly passed a different
   `:mode` to `Repo.transaction/2`.
 
@@ -349,7 +349,7 @@ defmodule Ecto.Adapters.SQLite3 do
   def autogenerate(:embed_id), do: Ecto.UUID.generate()
 
   def autogenerate(:binary_id) do
-    case Application.get_env(:ecto_sqlite3, :binary_id_type, :string) do
+    case Application.get_env(:ecto_libsql, :binary_id_type, :string) do
       :string -> Ecto.UUID.generate()
       :binary -> Ecto.UUID.bingenerate()
     end
@@ -423,7 +423,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   @impl Ecto.Adapter
   def loaders(:binary_id, type) do
-    case Application.get_env(:ecto_sqlite3, :binary_id_type, :string) do
+    case Application.get_env(:ecto_libsql, :binary_id_type, :string) do
       :string -> [type]
       :binary -> [Ecto.UUID, type]
     end
@@ -431,7 +431,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   @impl Ecto.Adapter
   def loaders(:uuid, type) do
-    case Application.get_env(:ecto_sqlite3, :uuid_type, :string) do
+    case Application.get_env(:ecto_libsql, :uuid_type, :string) do
       :string -> []
       :binary -> [type]
     end
@@ -463,7 +463,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   @impl Ecto.Adapter
   def dumpers(:binary_id, type) do
-    case Application.get_env(:ecto_sqlite3, :binary_id_type, :string) do
+    case Application.get_env(:ecto_libsql, :binary_id_type, :string) do
       :string -> [type]
       :binary -> [type, Ecto.UUID]
     end
@@ -471,7 +471,7 @@ defmodule Ecto.Adapters.SQLite3 do
 
   @impl Ecto.Adapter
   def dumpers(:uuid, type) do
-    case Application.get_env(:ecto_sqlite3, :uuid_type, :string) do
+    case Application.get_env(:ecto_libsql, :uuid_type, :string) do
       :string -> []
       :binary -> [type]
     end
@@ -484,25 +484,25 @@ defmodule Ecto.Adapters.SQLite3 do
 
   @impl Ecto.Adapter
   def dumpers(:utc_datetime, type) do
-    dt_type = Application.get_env(:ecto_sqlite3, :datetime_type, @default_datetime_type)
+    dt_type = Application.get_env(:ecto_libsql, :datetime_type, @default_datetime_type)
     [type, &Codec.utc_datetime_encode(&1, dt_type)]
   end
 
   @impl Ecto.Adapter
   def dumpers(:utc_datetime_usec, type) do
-    dt_type = Application.get_env(:ecto_sqlite3, :datetime_type, @default_datetime_type)
+    dt_type = Application.get_env(:ecto_libsql, :datetime_type, @default_datetime_type)
     [type, &Codec.utc_datetime_encode(&1, dt_type)]
   end
 
   @impl Ecto.Adapter
   def dumpers(:naive_datetime, type) do
-    dt_type = Application.get_env(:ecto_sqlite3, :datetime_type, @default_datetime_type)
+    dt_type = Application.get_env(:ecto_libsql, :datetime_type, @default_datetime_type)
     [type, &Codec.naive_datetime_encode(&1, dt_type)]
   end
 
   @impl Ecto.Adapter
   def dumpers(:naive_datetime_usec, type) do
-    dt_type = Application.get_env(:ecto_sqlite3, :datetime_type, @default_datetime_type)
+    dt_type = Application.get_env(:ecto_libsql, :datetime_type, @default_datetime_type)
     [type, &Codec.naive_datetime_encode(&1, dt_type)]
   end
 

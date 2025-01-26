@@ -7,10 +7,10 @@ defmodule Ecto.Adapters.SQLite3ConnTest do
 
   setup do
     original_binary_id_type =
-      Application.get_env(:ecto_sqlite3, :binary_id_type, :string)
+      Application.get_env(:ecto_libsql, :binary_id_type, :string)
 
     on_exit(fn ->
-      Application.put_env(:ecto_sqlite3, :binary_id_type, original_binary_id_type)
+      Application.put_env(:ecto_libsql, :binary_id_type, original_binary_id_type)
     end)
   end
 
@@ -87,12 +87,12 @@ defmodule Ecto.Adapters.SQLite3ConnTest do
     end
 
     test ":binary_id with type :string is a UUID in string form" do
-      Application.put_env(:ecto_sqlite3, :binary_id_type, :string)
+      Application.put_env(:ecto_libsql, :binary_id_type, :string)
       assert string_uuid?(SQLite3.autogenerate(:binary_id))
     end
 
     test ":binary_id with type :binary is a UUID in binary form" do
-      Application.put_env(:ecto_sqlite3, :binary_id_type, :binary)
+      Application.put_env(:ecto_libsql, :binary_id_type, :binary)
       assert binary_uuid?(SQLite3.autogenerate(:binary_id))
     end
   end

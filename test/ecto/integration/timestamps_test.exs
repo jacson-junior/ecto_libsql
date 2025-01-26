@@ -40,7 +40,7 @@ defmodule Ecto.Integration.TimestampsTest do
   end
 
   setup do
-    on_exit(fn -> Application.delete_env(:ecto_sqlite3, :datetime_type) end)
+    on_exit(fn -> Application.delete_env(:ecto_libsql, :datetime_type) end)
   end
 
   test "insert and fetch naive datetime" do
@@ -59,7 +59,7 @@ defmodule Ecto.Integration.TimestampsTest do
     assert user
 
     # text_datetime type
-    Application.put_env(:ecto_sqlite3, :datetime_type, :text_datetime)
+    Application.put_env(:ecto_libsql, :datetime_type, :text_datetime)
 
     {:ok, user} =
       %UserNaiveDatetime{}
@@ -83,7 +83,7 @@ defmodule Ecto.Integration.TimestampsTest do
     assert [^datetime] = TestRepo.all(query)
 
     # text_datetime type
-    Application.put_env(:ecto_sqlite3, :datetime_type, :text_datetime)
+    Application.put_env(:ecto_libsql, :datetime_type, :text_datetime)
 
     datetime = ~N[2014-01-16 20:26:51]
     TestRepo.insert!(%UserNaiveDatetime{inserted_at: datetime})
@@ -107,7 +107,7 @@ defmodule Ecto.Integration.TimestampsTest do
     assert user
 
     # text_datetime type
-    Application.put_env(:ecto_sqlite3, :datetime_type, :text_datetime)
+    Application.put_env(:ecto_libsql, :datetime_type, :text_datetime)
 
     {:ok, user} =
       %UserUtcDatetime{}

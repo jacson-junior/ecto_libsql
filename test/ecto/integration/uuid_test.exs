@@ -7,8 +7,8 @@ defmodule Ecto.Integration.UUIDTest do
   import Ecto.Query, only: [from: 2]
 
   setup do
-    Application.put_env(:ecto_sqlite3, :uuid_type, :string)
-    on_exit(fn -> Application.put_env(:ecto_sqlite3, :uuid_type, :string) end)
+    Application.put_env(:ecto_libsql, :uuid_type, :string)
+    on_exit(fn -> Application.put_env(:ecto_libsql, :uuid_type, :string) end)
   end
 
   test "handles uuid serialization and deserialization with string format " do
@@ -24,7 +24,7 @@ defmodule Ecto.Integration.UUIDTest do
   end
 
   test "handles uuid serialization and deserialization with binary format " do
-    Application.put_env(:ecto_sqlite3, :uuid_type, :binary)
+    Application.put_env(:ecto_libsql, :uuid_type, :binary)
 
     external_id = Ecto.UUID.generate()
     product = TestRepo.insert!(%Product{name: "Pupper Beer", external_id: external_id})
@@ -38,8 +38,8 @@ defmodule Ecto.Integration.UUIDTest do
   end
 
   test "handles uuid casting with binary format" do
-    Application.put_env(:ecto_sqlite3, :uuid_type, :binary)
-    Application.put_env(:ecto_sqlite3, :binary_id_type, :binary)
+    Application.put_env(:ecto_libsql, :uuid_type, :binary)
+    Application.put_env(:ecto_libsql, :binary_id_type, :binary)
 
     external_id = Ecto.UUID.generate()
     TestRepo.insert!(%Product{external_id: external_id, bid: external_id})
@@ -58,8 +58,8 @@ defmodule Ecto.Integration.UUIDTest do
   end
 
   test "handles binary_id casting with binary format" do
-    Application.put_env(:ecto_sqlite3, :uuid_type, :binary)
-    Application.put_env(:ecto_sqlite3, :binary_id_type, :binary)
+    Application.put_env(:ecto_libsql, :uuid_type, :binary)
+    Application.put_env(:ecto_libsql, :binary_id_type, :binary)
 
     bid = Ecto.UUID.generate()
     TestRepo.insert!(%Product{bid: bid, external_id: bid})

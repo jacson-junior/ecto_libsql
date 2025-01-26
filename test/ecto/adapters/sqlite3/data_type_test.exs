@@ -4,12 +4,12 @@ defmodule Ecto.Adapters.SQLite3.DataTypeTest do
   alias Ecto.Adapters.SQLite3.DataType
 
   setup do
-    Application.put_env(:ecto_sqlite3, :binary_id_type, :string)
-    Application.put_env(:ecto_sqlite3, :uuid_type, :string)
+    Application.put_env(:ecto_libsql, :binary_id_type, :string)
+    Application.put_env(:ecto_libsql, :uuid_type, :string)
 
     on_exit(fn ->
-      Application.put_env(:ecto_sqlite3, :binary_id_type, :string)
-      Application.put_env(:ecto_sqlite3, :uuid_type, :string)
+      Application.put_env(:ecto_libsql, :binary_id_type, :string)
+      Application.put_env(:ecto_libsql, :uuid_type, :string)
     end)
   end
 
@@ -29,7 +29,7 @@ defmodule Ecto.Adapters.SQLite3.DataTypeTest do
     test ":binary_id is TEXT OR UUID" do
       assert DataType.column_type(:binary_id, nil) == "TEXT"
 
-      Application.put_env(:ecto_sqlite3, :binary_id_type, :binary)
+      Application.put_env(:ecto_libsql, :binary_id_type, :binary)
 
       assert DataType.column_type(:binary_id, nil) == "BLOB"
     end
@@ -41,7 +41,7 @@ defmodule Ecto.Adapters.SQLite3.DataTypeTest do
     test ":uuid is TEXT or UUID" do
       assert DataType.column_type(:uuid, nil) == "TEXT"
 
-      Application.put_env(:ecto_sqlite3, :uuid_type, :binary)
+      Application.put_env(:ecto_libsql, :uuid_type, :binary)
 
       assert DataType.column_type(:uuid, nil) == "BLOB"
     end
