@@ -7,7 +7,7 @@ defmodule Ecto.Adapters.LibSQL do
   ## Options
 
   The adapter supports a superset of the options provided by the
-  underlying `Exqlite` driver.
+  underlying `ExLibSQL` driver.
 
   ### Provided options
 
@@ -58,7 +58,7 @@ defmodule Ecto.Adapters.LibSQL do
     * `:load_extensions` - list of paths identifying extensions to load. Defaults to `[]`.
        The provided list will be merged with the global extensions list, set on
        `:exqlite, :load_extensions`. Be aware that the path should handle pointing to a
-       library compiled for the current architecture. See `Exqlite.Connection.connect/1`
+       library compiled for the current architecture. See `ExLibSQL.Connection.connect/1`
        for more.
 
   For more information about the options above, see [libSQL documentation][1]
@@ -213,7 +213,7 @@ defmodule Ecto.Adapters.LibSQL do
   """
 
   use Ecto.Adapters.SQL,
-    driver: :exqlite
+    driver: :ex_libsql
 
   @behaviour Ecto.Adapter.Storage
   @behaviour Ecto.Adapter.Structure
@@ -273,8 +273,8 @@ defmodule Ecto.Adapters.LibSQL do
         """
 
       true ->
-        {:ok, state} = Exqlite.Connection.connect(options)
-        :ok = Exqlite.Connection.disconnect(:normal, state)
+        {:ok, state} = ExLibSQL.Connection.connect(options)
+        :ok = ExLibSQL.Connection.disconnect(:normal, state)
     end
   end
 

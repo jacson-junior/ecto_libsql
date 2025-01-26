@@ -28,36 +28,36 @@ defmodule Ecto.Adapters.LibSQL.Connection do
 
   def start_link(opts) do
     opts = default_opts(opts)
-    DBConnection.start_link(Exqlite.Connection, opts)
+    DBConnection.start_link(ExLibSQL.Connection, opts)
   end
 
   @impl true
   def child_spec(options) do
     {:ok, _} = Application.ensure_all_started(:db_connection)
     options = default_opts(options)
-    DBConnection.child_spec(Exqlite.Connection, options)
+    DBConnection.child_spec(ExLibSQL.Connection, options)
   end
 
   @impl true
   def prepare_execute(conn, name, sql, params, options) do
-    query = Exqlite.Query.build(name: name, statement: sql)
+    query = ExLibSQL.Query.build(name: name, statement: sql)
 
     case DBConnection.prepare_execute(conn, query, params, options) do
       {:ok, _, _} = ok -> ok
-      {:error, %Exqlite.Error{}} = error -> error
+      {:error, %ExLibSQL.Error{}} = error -> error
       {:error, err} -> raise err
     end
   end
 
   @impl true
-  def execute(conn, %Exqlite.Query{ref: ref} = cached, params, options)
+  def execute(conn, %ExLibSQL.Query{ref: ref} = cached, params, options)
       when ref != nil do
     DBConnection.execute(conn, cached, params, options)
   end
 
   def execute(
         conn,
-        %Exqlite.Query{statement: statement, ref: nil},
+        %ExLibSQL.Query{statement: statement, ref: nil},
         params,
         options
       ) do
@@ -65,11 +65,11 @@ defmodule Ecto.Adapters.LibSQL.Connection do
   end
 
   def execute(conn, sql, params, options) when is_binary(sql) or is_list(sql) do
-    query = Exqlite.Query.build(name: "", statement: IO.iodata_to_binary(sql))
+    query = ExLibSQL.Query.build(name: "", statement: IO.iodata_to_binary(sql))
 
     case DBConnection.prepare_execute(conn, query, params, options) do
-      {:ok, %Exqlite.Query{}, result} -> {:ok, result}
-      {:error, %Exqlite.Error{}} = error -> error
+      {:ok, %ExLibSQL.Query{}, result} -> {:ok, result}
+      {:error, %ExLibSQL.Error{}} = error -> error
       {:error, err} -> raise err
     end
   end
@@ -78,14 +78,14 @@ defmodule Ecto.Adapters.LibSQL.Connection do
     case DBConnection.execute(conn, query, params, options) do
       {:ok, _} = ok -> ok
       {:error, %ArgumentError{} = err} -> {:reset, err}
-      {:error, %Exqlite.Error{}} = error -> error
+      {:error, %ExLibSQL.Error{}} = error -> error
       {:error, err} -> raise err
     end
   end
 
   @impl true
   def query(conn, sql, params, options) do
-    query = Exqlite.Query.build(statement: IO.iodata_to_binary(sql))
+    query = ExLibSQL.Query.build(statement: IO.iodata_to_binary(sql))
 
     case DBConnection.execute(conn, query, params, options) do
       {:ok, _, result} -> {:ok, result}
@@ -100,7 +100,7 @@ defmodule Ecto.Adapters.LibSQL.Connection do
 
   @impl true
   def stream(conn, sql, params, options) do
-    query = Exqlite.Query.build(statement: sql)
+    query = ExLibSQL.Query.build(statement: sql)
     DBConnection.stream(conn, query, params, options)
   end
 
@@ -135,26 +135,26 @@ defmodule Ecto.Adapters.LibSQL.Connection do
 
   @impl true
   def to_constraints(
-        %Exqlite.Error{message: "UNIQUE constraint failed: index " <> constraint},
+        %ExLibSQL.Error{message: "UNIQUE constraint failed: index " <> constraint},
         _opts
       ) do
     [unique: String.trim(constraint, ~s('))]
   end
 
   def to_constraints(
-        %Exqlite.Error{message: "UNIQUE constraint failed: " <> constraint},
+        %ExLibSQL.Error{message: "UNIQUE constraint failed: " <> constraint},
         _opts
       ) do
     [unique: constraint_name_hack(constraint)]
   end
 
-  def to_constraints(%Exqlite.Error{message: "FOREIGN KEY constraint failed"}, _opts) do
+  def to_constraints(%ExLibSQL.Error{message: "FOREIGN KEY constraint failed"}, _opts) do
     # unfortunately we have no other date from libSQL
     [foreign_key: nil]
   end
 
   def to_constraints(
-        %Exqlite.Error{message: "CHECK constraint failed: " <> name},
+        %ExLibSQL.Error{message: "CHECK constraint failed: " <> name},
         _opts
       ) do
     [check: name]
@@ -336,7 +336,7 @@ defmodule Ecto.Adapters.LibSQL.Connection do
     type = Keyword.get(opts, :type, :query_plan)
 
     case query(conn, build_explain_query(query, type), params, opts) do
-      {:ok, %Exqlite.Result{} = result} ->
+      {:ok, %ExLibSQL.Result{} = result} ->
         case type do
           :query_plan -> {:ok, format_query_plan_explain(result)}
           :instructions -> {:ok, SQL.format_table(result)}

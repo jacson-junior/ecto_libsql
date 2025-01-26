@@ -4,7 +4,7 @@
 
 An Ecto libSQL Adapter. Uses [ExLibSQL](https://github.com/jacson-junior/ex_libsql)
 as the driver to communicate with libSQL.
-Based on the [Ecto SQLite3 Adapter](https://github.com/elixir-sqlite/exqlite)
+Based on the [Ecto SQLite3 Adapter](https://github.com/elixir-sqlite/ecto_sqlite3)
 
 ## Installation
 

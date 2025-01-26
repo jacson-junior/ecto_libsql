@@ -7,7 +7,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.ToConstraintsTest do
     # created with:
     # CREATE UNIQUE INDEX users_email_name_index ON users (email);
 
-    error = %Exqlite.Error{message: "UNIQUE constraint failed: users.email"}
+    error = %ExLibSQL.Error{message: "UNIQUE constraint failed: users.email"}
     assert Connection.to_constraints(error, []) == [unique: "users_email_index"]
   end
 
@@ -15,7 +15,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.ToConstraintsTest do
     # created with:
     # CREATE UNIQUE INDEX users_email_name_index ON users (email, name);
 
-    error = %Exqlite.Error{
+    error = %ExLibSQL.Error{
       message: "UNIQUE constraint failed: users.email, users.name"
     }
 
@@ -26,7 +26,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.ToConstraintsTest do
     # created with:
     # CREATE UNIQUE INDEX users_email_year_index ON users (email, strftime('%Y', inserted_at));
 
-    error = %Exqlite.Error{
+    error = %ExLibSQL.Error{
       message: "UNIQUE constraint failed: index 'users_email_year_index'"
     }
 
