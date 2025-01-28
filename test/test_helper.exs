@@ -1,4 +1,4 @@
-Logger.configure(level: :info)
+# Logger.configure(level: :info)
 
 Application.put_env(:ecto, :primary_key_type, :id)
 Application.put_env(:ecto, :async_integration_tests, false)

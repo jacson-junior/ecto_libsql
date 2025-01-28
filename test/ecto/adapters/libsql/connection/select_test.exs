@@ -4,7 +4,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.SelectTest do
   import Ecto.Query
   import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "select" do
     query =
@@ -72,7 +72,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.SelectTest do
 
     test "distinct with multiple columns is not supported" do
       assert_raise Ecto.QueryError,
-                   ~r"DISTINCT with multiple columns is not supported by SQLite3",
+                   ~r"DISTINCT with multiple columns is not supported by libSQL",
                    fn ->
                      query =
                        Schema

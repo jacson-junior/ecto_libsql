@@ -5,8 +5,8 @@ defmodule Ecto.Adapters.LibSQL.Connection.UpdateAllTest do
   import Ecto.Adapters.LibSQL.TestHelpers
 
   alias Ecto.Adapter.Queryable
-  alias EctoSQLite3.Schemas.Schema
-  alias EctoSQLite3.Schemas.Schema2
+  alias EctoLibSQL.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema2
 
   test "update all" do
     query =

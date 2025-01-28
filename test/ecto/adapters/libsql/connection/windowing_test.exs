@@ -4,7 +4,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.WindowingTest do
   import Ecto.Query
   import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "one window" do
     query =

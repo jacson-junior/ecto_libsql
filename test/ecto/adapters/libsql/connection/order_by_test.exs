@@ -4,7 +4,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.OrderByTest do
   import Ecto.Query
   import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "default" do
     query =

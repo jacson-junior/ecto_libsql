@@ -4,7 +4,7 @@ defmodule Ecto.Adapters.LibSQL.Connection.UnionTest do
   import Ecto.Query
   import Ecto.Adapters.LibSQL.TestHelpers
 
-  alias EctoSQLite3.Schemas.Schema
+  alias EctoLibSQL.Schemas.Schema
 
   test "union and union all" do
     base_query =

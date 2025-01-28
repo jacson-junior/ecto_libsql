@@ -1,6 +1,11 @@
 defmodule Ecto.Adapters.LibSQL.Codec do
   @moduledoc false
 
+  def binary_decode(b) when is_list(b), do: {:ok, IO.iodata_to_binary(b)}
+  def binary_decode(b) when is_binary(b), do: {:ok, b}
+  def binary_decode(nil), do: {:ok, nil}
+  def binary_decode(_b), do: :error
+
   def bool_decode(0), do: {:ok, false}
   def bool_decode("0"), do: {:ok, false}
   def bool_decode("FALSE"), do: {:ok, false}
